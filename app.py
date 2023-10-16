@@ -1,6 +1,7 @@
 import streamlit as st
 import preprocessor,helper
 import matplotlib.pyplot as plt
+import emoji
 
 
 st.sidebar.title("Whatsapp Chat Analyzer")
@@ -72,3 +73,17 @@ if uploaded_file is not None:
 
         st.title('Most commmon words')
         st.pyplot(fig)
+
+        #emoji
+
+        emoji_df = helper.emoji_helper(selected_user,df)
+        st.title("Emoji Analysis")
+
+        col1,col2 = st.columns(2)
+
+        with col1:
+            st.dataframe(emoji_df)
+        with col2:
+            fig,ax = plt.subplots()
+            ax.pie(emoji_df[1].head(),labels=[emoji.demojize(e) for e in emoji_df[0].head()],autopct="%0.2f")
+            st.pyplot(fig)
