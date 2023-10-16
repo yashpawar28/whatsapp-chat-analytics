@@ -14,7 +14,8 @@ if uploaded_file is not None:
     st.dataframe(df)
 
     user_list = df['user'].unique().tolist()
-    user_list.remove('group_notification')
+    if 'group_notification' in user_list:
+        user_list.remove('group_notification')
     user_list.sort()
     user_list.insert(0,"Overall")
 
@@ -39,6 +40,22 @@ if uploaded_file is not None:
         with col4:
             st.header("Links Shared")
             st.title(num_links)
+
+        st.title("Monthly Timeline")
+        timeline = helper.monthly_timeline(selected_user,df)
+        fig,ax = plt.subplots()
+        ax.plot(timeline['time'], timeline['message'],color='green')
+        plt.xticks(rotation='vertical')
+        st.pyplot(fig)
+
+         # daily timeline
+        st.title("Daily Timeline")
+        daily_timeline = helper.daily_timeline(selected_user, df)
+        fig, ax = plt.subplots()
+        ax.plot(daily_timeline['only_date'], daily_timeline['message'], color='black')
+        ax.xaxis.set_major_locator(plt.MaxNLocator(6))  # Adjust the number of ticks as needed
+        plt.xticks(rotation=45)
+        st.pyplot(fig)
 
          # finding the busiest users in the group(Group level)
         if selected_user == 'Overall':
